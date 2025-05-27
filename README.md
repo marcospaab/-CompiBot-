@@ -11,10 +11,12 @@ Este proyecto es un **ensayo** creado por **Marcos Padín** para demostrar cómo
 
 ## ⚙️ ¿Cómo funciona?  
 
-    1. El usuario envía un mensaje a CompiBot en Telegram.<br>
-    2. CompiBot envía el mensaje a un modelo de IA local (como Ollama).<br>
-    3. El modelo genera una respuesta basada en el mensaje recibido.<br>
+    1. El usuario envía un mensaje a CompiBot en Telegram.
+    2. CompiBot envía el mensaje a un modelo de IA local (como Ollama).
+    3. El modelo genera una respuesta basada en el mensaje recibido.
     4. CompiBot devuelve esa respuesta al usuario en Telegram.
+    5. Si el usuario envía un sticker, CompiBot lo almacena y puede enviarlo posteriormente.
+    6. El usuario puede solicitar un sticker aleatorio con el comando /sticker.
 
 <img align="right" width=300px alt="Unicorn" src="https://github.com/user-attachments/assets/b96a6e8b-81d8-46c8-abaf-36b67d39520a" />
 
@@ -56,24 +58,24 @@ Este proyecto es un **ensayo** creado por **Marcos Padín** para demostrar cómo
 
 5. Busca el bot en Telegram por el nombre que configuraste y comienza a enviar mensajes.
 
+6. Prueba la funcionalidad de stickers enviando uno a CompiBot y luego usando /sticker para recibir un sticker aleatorio.
+
 ---
 
 ## 🎨 Personalización
-
+<img align="right" width=300px alt="Unicorn" src="https://github.com/user-attachments/assets/8e4141a9-b97e-4e7d-add0-3339530bd744" />
 Puedes cambiar el nombre del bot en el código para que se presente siempre como "CompiBot", o modificar el prompt que envías a Ollama para ajustar su personalidad o estilo de respuesta.
 
 ---
 
 ## ⚠️ Problemas comunes
-
 - **Timeout o error de conexión:** Verifica que Ollama esté corriendo y accesible en `localhost:11434`.  
 - **Token inválido:** Asegúrate de usar el token correcto proporcionado por BotFather.  
 - **Java no instalado:** Instala Java 17 o superior.
+- **No se envían stickers:** Puede que no haya stickers almacenados aún, intenta enviándole uno primero.
 
 ---
-
 ## 📝 Licencia
-
 Este proyecto es de código abierto bajo licencia de libre uso.
 
 ---
