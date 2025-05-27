@@ -16,8 +16,7 @@ Este proyecto es un **ensayo** creado por **Marcos Padín** para demostrar cómo
     3. El modelo genera una respuesta basada en el mensaje recibido.<br>
     4. CompiBot devuelve esa respuesta al usuario en Telegram.
 
-<img align="right" width=300px alt="Unicorn" src="https://github.com/user-attachments/assets/601f25e6-1822-4239-af78-c071cd67f876" />
-
+<img align="right" width=300px alt="Unicorn" src="https://github.com/user-attachments/assets/b96a6e8b-81d8-46c8-abaf-36b67d39520a" />
 
 
 ## 🚀 Cómo replicar CompiBot
