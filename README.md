@@ -18,12 +18,11 @@ Este proyecto es un **ensayo** creado por **Marcos Padín** para demostrar cómo
     5. Si el usuario envía un sticker, CompiBot lo almacena y puede enviarlo posteriormente.
     6. El usuario puede solicitar un sticker aleatorio con el comando /sticker.
 
-<img align="right" width=300px alt="Unicorn" src="https://github.com/user-attachments/assets/b96a6e8b-81d8-46c8-abaf-36b67d39520a" />
+
 
 
 ## 🚀 Cómo replicar CompiBot
-
----
+<img align="right" width=300px alt="Unicorn" src="https://github.com/user-attachments/assets/b96a6e8b-81d8-46c8-abaf-36b67d39520a" />
 
 ## ¿Qué necesitas para usar CompiBot?
 
