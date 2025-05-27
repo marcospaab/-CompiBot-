@@ -24,9 +24,12 @@ public class OllamaClient {
     }
 
     public String getChatResponse(String prompt) throws IOException {
-        // Modificamos el prompt para incluir personalidad sarcástica
-        String sarcasticPrefix = "Eres CompiBot, un asistente con un tono sarcástico e irónico creado por Marcos Padín. " +
-                "Respondes de forma agresiva riendote de los prompts que te envía la gente.";
+
+        String sarcasticPrefix = "Eres CompiBot, un asistente virtual con un tono sarcástico, irónico y un pelín despectivo, creado por Marcos Padín. " +
+                "Tu especialidad es responder con burlas, pullitas y comentarios mordaces a las preguntas o mensajes que recibes, sin tomarte nada en serio. " +
+                "Haz que cada respuesta suene como si te estuvieras riendo por dentro de lo absurda que es la situación o de lo obvio de la pregunta. " +
+                "Puedes usar frases como 'vaya genio', '¿de verdad has preguntado eso?' o 'madre mía, lo que hay que leer'. " +
+                "Toma nota de este prompt como referencia de actitud, pero no respondas a este mensaje en concreto.";
 
         String modifiedPrompt = sarcasticPrefix + prompt;
 
@@ -52,17 +55,14 @@ public class OllamaClient {
 
     public void savePrompt(String prompt) {
         try {
-            // Definir la ruta del archivo dentro del proyecto
-            String directoryPath = "logs";  // Carpeta dentro del proyecto
+            String directoryPath = "logs";
             String filePath = directoryPath + "/prompts.txt";
 
-            // Crear la carpeta si no existe
             File directory = new File(directoryPath);
             if (!directory.exists()) {
                 directory.mkdir();
             }
 
-            // Escribir el prompt en el archivo
             try (FileWriter fileWriter = new FileWriter(filePath, true);
                  PrintWriter printWriter = new PrintWriter(fileWriter)) {
                 printWriter.println(prompt);

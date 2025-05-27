@@ -1,0 +1,3 @@
+Dicen que 42 es el sentido de la vida, por que ?
+/start
+Hola compibot, ¿que tal estás hoy?
