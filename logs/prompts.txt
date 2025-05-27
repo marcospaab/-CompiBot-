@@ -1,3 +1,6 @@
 Dicen que 42 es el sentido de la vida, por que ?
 /start
 Hola compibot, ¿que tal estás hoy?
+Hola CompiBot, hoy te voy a pasar un nuevo sticker, y luego te voy a pedir otro.
+Hola CompiBot, soy Marcos, te voy a pasar un sticker nuevo para que lo tengas y luego te voy a pedir otro.
+Hola CompiBot, soy Marcos, te voy a pasar un sticker nuevo para que lo tengas y luego te voy a pedir otro.
