@@ -1,7 +1,6 @@
 # CompiBot 🤖
 <img align="right" width=300px alt="Unicorn" src="https://media.tenor.com/xzKtvBspe5YAAAAi/emo-robot-happy-discord.gif" />
 
-
 ## 🤖 ¿Qué es CompiBot?
 
 **CompiBot** es un asistente conversacional basado en inteligencia artificial que funciona a través de Telegram.  
@@ -11,15 +10,14 @@ Este proyecto es un **ensayo** creado por **Marcos Padín** para demostrar cómo
 
 ## ⚙️ ¿Cómo funciona?  
 
-    1. El usuario envía un mensaje a CompiBot en Telegram.
-    2. CompiBot envía el mensaje a un modelo de IA local (como Ollama).
-    3. El modelo genera una respuesta basada en el mensaje recibido.
-    4. CompiBot devuelve esa respuesta al usuario en Telegram.
-    5. Si el usuario envía un sticker, CompiBot lo almacena y puede enviarlo posteriormente.
-    6. El usuario puede solicitar un sticker aleatorio con el comando /sticker.
+1. El usuario envía un mensaje a CompiBot en Telegram.
+2. CompiBot envía el mensaje a un modelo de IA local (como Ollama).
+3. El modelo genera una respuesta basada en el mensaje recibido.
+4. CompiBot devuelve esa respuesta al usuario en Telegram.
+5. **NUEVO:** Ahora CompiBot almacena los mensajes recientes para mejorar la continuidad en las conversaciones.
+6. **NUEVO:** Se han optimizado las respuestas para reducir tiempos de procesamiento.
 
-
-
+---
 
 ## 🚀 Cómo replicar CompiBot
 <img align="right" width=300px alt="Unicorn" src="https://github.com/user-attachments/assets/b96a6e8b-81d8-46c8-abaf-36b67d39520a" />
@@ -57,7 +55,7 @@ Este proyecto es un **ensayo** creado por **Marcos Padín** para demostrar cómo
 
 5. Busca el bot en Telegram por el nombre que configuraste y comienza a enviar mensajes.
 
-6. Prueba la funcionalidad de stickers enviando uno a CompiBot y luego usando /sticker para recibir un sticker aleatorio.
+6. **NUEVO:** Ahora el comando `/sticker` puede enviar stickers personalizados además de los aleatorios.
 
 ---
 
