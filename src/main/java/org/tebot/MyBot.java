@@ -1,98 +1,127 @@
 package org.tebot;
 
+import marytts.LocalMaryInterface;
+import marytts.MaryInterface;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.methods.send.*;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import javax.sound.sampled.*;
+import java.io.File;
+import java.util.List;
 
 public class MyBot extends TelegramLongPollingBot {
-
+    private static final String VOICE_NAME = "cmu-slt-hsmm";
     private final String botUsername;
     private final OllamaClient ollamaClient;
+    private final MaryInterface marytts;
 
-    public MyBot(String botToken, String botUsername) {
-        super(botToken);
+    public MyBot(String token, String botUsername) {
+        super(token);
         this.botUsername = botUsername;
         this.ollamaClient = new OllamaClient();
-    }
-
-    @Override
-    public void onUpdateReceived(Update update) {
-        if (update.hasMessage()) {
-            handleIncomingSticker(update);
-
-            if (update.getMessage().hasText()) {
-                long chat_id = update.getMessage().getChatId();
-                String message_received = update.getMessage().getText();
-
-                new Thread(() -> {
-                    if (message_received.equalsIgnoreCase("/sticker")) {
-                        enviarStickerAleatorio(chat_id);
-                        return;
-                    }
-
-                    try {
-                        String aiResponse = ollamaClient.getChatResponse(message_received);
-                        String responseWithName = "CompiBot: " + aiResponse;
-
-                        SendMessage message = SendMessage.builder()
-                                .chatId(chat_id)
-                                .text(responseWithName)
-                                .build();
-                        execute(message);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        try {
-                            SendMessage errorMessage = SendMessage.builder()
-                                    .chatId(chat_id)
-                                    .text("Lo siento, hubo un error al procesar tu solicitud.")
-                                    .build();
-                            execute(errorMessage);
-                        } catch (TelegramApiException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }).start();
-            }
+        try {
+            marytts = new LocalMaryInterface();
+            marytts.setVoice(VOICE_NAME);
+        } catch (Exception e) {
+            throw new RuntimeException("Error inicializando MaryTTS", e);
         }
     }
 
     @Override
     public String getBotUsername() {
-        return this.botUsername;
+        return botUsername;
     }
 
-    private void handleIncomingSticker(Update update) {
-        if (update.hasMessage() && update.getMessage().hasSticker()) {
-            String fileId = update.getMessage().getSticker().getFileId();
-            StickerRepository.addStickerFileId(fileId);
+    @Override
+    public void onUpdateReceived(Update update) {
+        if (!update.hasMessage()) return;
+
+        if (update.getMessage().hasSticker()) {
+            StickerRepository.addStickerFileId(update.getMessage().getSticker().getFileId());
+        }
+
+        if (update.getMessage().hasText()) {
+            handleIncomingText(update.getMessage());
         }
     }
 
+    private void handleIncomingText(Message message) {
+        long chatId = message.getChatId();
+        String text = message.getText();
+        String chatIdStr = String.valueOf(chatId);  // <-- convertir aquí a String
 
-    private void enviarStickerAleatorio(long chatId) {
+        new Thread(() -> {
+            try {
+                switch (text.toLowerCase()) {
+                    case "/sticker" -> sendRandomSticker(chatId);
+                    case "/voz" -> sendVoiceMessage(chatId, "¡Hola! Soy CompiBot y ahora puedo hablar.");
+                    default -> {
+                        ConversationHistory.addMessage(chatIdStr, "Usuario: " + text);
+                        String context = buildConversationContext(chatIdStr);
+                        String aiResponse = ollamaClient.getChatResponse(context, text);
+                        ConversationHistory.addMessage(chatIdStr, "CompiBot: " + aiResponse);
+                        sendVoiceMessage(chatId, aiResponse);
+                        sendTextMessage(chatId, "CompiBot: " + aiResponse);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                sendTextMessage(chatId, "Lo siento, hubo un error al procesar tu solicitud.");
+            }
+        }).start();
+    }
+
+    private void sendRandomSticker(long chatId) {
         try {
-            String randomStickerId = StickerRepository.getRandomStickerFileId();
-
-            SendSticker sticker = new SendSticker();
-            sticker.setChatId(chatId);
-            sticker.setSticker(new InputFile(randomStickerId));
-
-            execute(sticker);
-
+            String stickerId = StickerRepository.getRandomStickerFileId();
+            execute(SendSticker.builder()
+                    .chatId(chatId)
+                    .sticker(new InputFile(stickerId))
+                    .build());
         } catch (TelegramApiException e) {
             e.printStackTrace();
-            try {
-                SendMessage errorMessage = SendMessage.builder()
-                        .chatId(chatId)
-                        .text("No pude enviarte el sticker, pringao.")
-                        .build();
-                execute(errorMessage);
-            } catch (TelegramApiException ex) {
-                ex.printStackTrace();
-            }
+            sendTextMessage(chatId, "No pude enviarte el sticker, pringao.");
         }
+    }
+
+    private void sendTextMessage(long chatId, String text) {
+        try {
+            execute(SendMessage.builder()
+                    .chatId(chatId)
+                    .text(text)
+                    .build());
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendVoiceMessage(long chatId, String text) {
+        try {
+            File audioFile = new File("output_" + System.currentTimeMillis() + ".wav");
+            AudioInputStream audio = marytts.generateAudio(text);
+            AudioSystem.write(audio, AudioFileFormat.Type.WAVE, audioFile);
+
+            execute(SendAudio.builder()
+                    .chatId(chatId)
+                    .audio(new InputFile(audioFile))
+                    .build());
+
+            audioFile.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String buildConversationContext(String chatId) {
+        List<MessageEntry> history = ConversationHistory.getHistory(chatId);
+        StringBuilder contextBuilder = new StringBuilder();
+        for (MessageEntry entry : history) {
+            contextBuilder.append(entry.getTimestamp())
+                    .append(" - ")
+                    .append(entry.getMessage())
+                    .append("\n");
+        }
+        return contextBuilder.toString();
     }
 }

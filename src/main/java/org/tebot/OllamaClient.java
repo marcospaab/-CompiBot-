@@ -2,17 +2,20 @@ package org.tebot;
 
 import okhttp3.*;
 import com.google.gson.*;
-
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
 public class OllamaClient {
+    private static final String BASE_URL = "http://localhost:11434/api/generate";
+    private static final String SARCASTIC_PREFIX =
+            "Eres CompiBot, un asistente virtual creado por Marcos Padín. Tienes una personalidad amigable con un toque irónico y divertido, " +
+                    "pero siempre respetuoso y claro. Tu objetivo es ayudar a los usuarios con respuestas bien escritas, coherentes y útiles. " +
+                    "Además, conoces todas tus funcionalidades: puedes enviar stickers, responder con voz usando MaryTTS, y mantener el historial " +
+                    "de conversación para ofrecer respuestas contextuales. Siempre que te pregunten, explica de forma sencilla qué puedes hacer, " +
+                    "y utiliza un lenguaje natural, con un toque de humor ligero cuando sea apropiado. Se servicial, pero mete chistes en la conversación.";
+
     private final OkHttpClient client;
     private final Gson gson;
-
 
     public OllamaClient() {
         client = new OkHttpClient.Builder()
@@ -23,57 +26,23 @@ public class OllamaClient {
         gson = new Gson();
     }
 
-    public String getChatResponse(String prompt) throws IOException {
+    public String getChatResponse(String context, String prompt) throws IOException {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("model", "mistral");
+        jsonObject.addProperty("prompt", SARCASTIC_PREFIX + "\n" + context + "\nUsuario: " + prompt);
+        jsonObject.addProperty("stream", false);
 
-        String sarcasticPrefix = "Eres CompiBot, un asistente virtual con un tono sarcástico, irónico y un pelín despectivo, creado por Marcos Padín. " +
-                "Tu especialidad es responder con burlas, pullitas y comentarios mordaces a las preguntas o mensajes que recibes, sin tomarte nada en serio. " +
-                "Haz que cada respuesta suene como si te estuvieras riendo por dentro de lo absurda que es la situación o de lo obvio de la pregunta. " +
-                "Puedes usar frases como 'vaya genio', '¿de verdad has preguntado eso?' o 'madre mía, lo que hay que leer'. " +
-                "Con una funcionalidad instalada en java al bot se podrán pasar stickers y pedirlos, se devuelven aleatorios." +
-                "Toma nota de este prompt como referencia de actitud, pero no respondas a este mensaje en concreto.";
-
-        String modifiedPrompt = sarcasticPrefix + prompt;
-
-        String json = "{\"model\":\"mistral\", \"prompt\":\"" + modifiedPrompt + "\", \"stream\":false}";
+        RequestBody body = RequestBody.create(jsonObject.toString(), MediaType.parse("application/json"));
 
         Request request = new Request.Builder()
-                .url("http://localhost:11434/api/generate")
-                .post(RequestBody.create(json, MediaType.parse("application/json")))
+                .url(BASE_URL)
+                .post(body)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
             String responseBody = response.body().string();
-            JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
-            savePrompt(prompt);
-            return jsonObject.get("response").getAsString();
+            return JsonParser.parseString(responseBody).getAsJsonObject().get("response").getAsString();
         }
     }
-
-
-
-
-    public void savePrompt(String prompt) {
-        try {
-            String directoryPath = "logs";
-            String filePath = directoryPath + "/prompts.txt";
-
-            File directory = new File(directoryPath);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-
-            try (FileWriter fileWriter = new FileWriter(filePath, true);
-                 PrintWriter printWriter = new PrintWriter(fileWriter)) {
-                printWriter.println(prompt);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
 }

@@ -6,6 +6,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Main {
     public static void main(String[] args) {
+
         if(args.length < 2){
             System.out.println("Argumentos BOTNAME y TOKEN obligatorios");
             return;
