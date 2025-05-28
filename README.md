@@ -14,8 +14,10 @@ Este proyecto es un **ensayo** creado por **Marcos Padín** para demostrar cómo
 2. CompiBot envía el mensaje a un modelo de IA local (como Ollama).
 3. El modelo genera una respuesta basada en el mensaje recibido.
 4. CompiBot devuelve esa respuesta al usuario en Telegram.
-5. **NUEVO:** Ahora CompiBot almacena los mensajes recientes para mejorar la continuidad en las conversaciones.
-6. **NUEVO:** Se han optimizado las respuestas para reducir tiempos de procesamiento.
+5. Compibot puede guardar stickers compartidos y puede mostrarte un sticker usando el comando /sticker.
+6. **NUEVO:** Ahora CompiBot almacena los mensajes recientes para mejorar la continuidad en las conversaciones.
+7. **NUEVO:** Se han optimizado las respuestas para reducir tiempos de procesamiento.
+8. **NUEVO:** Se han añadido el comando /voz para el texto a voz del programa.
 
 ---
 
